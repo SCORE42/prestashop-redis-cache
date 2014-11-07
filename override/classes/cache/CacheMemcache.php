@@ -76,9 +76,14 @@ class CacheMemcacheCore extends Cache
 			$this->_redis = new Redis();
 		else
 			return false;
-               if (!_PS_CACHE_REDIS_ || !preg_match("/:/",_PS_CACHE_REDIS_))
+               if (!defined(_PS_CACHE_REDIS_))
                         define('_PS_CACHE_REDIS_', '127.0.0.1:6379');
-                $params = explode(':',_PS_CACHE_REDIS_);
+                if(!strpos(":",_PS_CACHE_REDIS_))
+                {
+                        $params = array(_PS_CACHE_REDIS_, '6379');
+                } else {
+                        $params = explode(':',_PS_CACHE_REDIS_);
+                }
                 try {
     	            $this->_isConnected = $this->_redis->connect($params[0], $params[1]);
                     $this->_redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP); 
